@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ตารางซ้อมกีต้าร์ 30 วัน · Ready or Not</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#17110D; --panel:#211912; --panel2:#2B2118;
+    --line:#3D2F22; --ink:#EBDFCB; --dim:#A89376;
+    --amber:#E6A95B; --amber-hi:#F4C277; --glow:rgba(230,169,91,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"IBM Plex Sans Thai",system-ui,sans-serif;
+    line-height:1.55; padding:0 0 64px; overflow-x:hidden;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px}
+
+  /* ---- header ---- */
+  header{
+    position:relative; padding:38px 0 30px; text-align:center;
+    background:
+      repeating-linear-gradient(180deg,transparent 0 13px,rgba(235,223,203,.05) 13px 14px),
+      radial-gradient(120% 90% at 50% -10%, rgba(230,169,91,.18), transparent 60%);
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:"Space Mono",monospace; font-size:11px; letter-spacing:.35em;
+    text-transform:uppercase; color:var(--amber); margin-bottom:14px;
+  }
+  h1{
+    font-family:"Kanit",sans-serif; font-weight:700; line-height:1.05;
+    font-size:clamp(30px,8vw,52px); letter-spacing:-.01em;
+  }
+  h1 .song{color:var(--amber-hi)}
+  .sub{color:var(--dim); margin-top:10px; font-size:15px}
+  .goal{
+    margin:20px auto 0; max-width:520px; font-size:14px; color:var(--ink);
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:12px 16px;
+  }
+  .goal b{color:var(--amber-hi);font-weight:600}
+
+  /* ---- progress string ---- */
+  .progress{margin:26px 0 4px}
+  .progress .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .progress .top .lbl{font-family:"Space Mono",monospace;font-size:12px;color:var(--dim);letter-spacing:.1em}
+  .progress .top .cnt{font-family:"Kanit",sans-serif;font-weight:600;font-size:18px;color:var(--amber-hi)}
+  .track{height:6px;border-radius:6px;background:var(--panel2);overflow:hidden;position:relative}
+  .fill{height:100%;width:0;border-radius:6px;
+    background:linear-gradient(90deg,var(--amber),var(--amber-hi));
+    box-shadow:0 0 12px var(--glow); transition:width .4s ease}
+
+  /* ---- chord strip ---- */
+  .chords{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+    margin:24px 0 8px;
+  }
+  .chip{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 6px;text-align:center}
+  .chip .nm{font-family:"Kanit",sans-serif;font-weight:700;font-size:24px;color:var(--amber-hi);line-height:1}
+  .chip .tag{font-size:10.5px;color:var(--dim);margin-top:3px;min-height:13px}
+  .chip .pat{font-family:"Space Mono",monospace;font-size:11px;color:var(--ink);margin-top:8px;letter-spacing:.02em}
+  .pat b{color:var(--amber)}
+  .strip-note{font-size:12.5px;color:var(--dim);text-align:center;margin-top:4px}
+  .strip-note b{color:var(--ink);font-weight:600}
+
+  /* ---- week panels ---- */
+  .week{margin-top:30px}
+  .whead{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .inlay{
+    flex:none;width:46px;height:46px;border-radius:50%;
+    background:var(--panel2);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    font-family:"Space Mono",monospace;font-weight:700;font-size:15px;color:var(--amber);
+    box-shadow:inset 0 0 0 4px var(--bg), 0 0 0 1px var(--line);
+  }
+  .inlay.dbl{background:var(--amber);color:var(--bg);box-shadow:inset 0 0 0 4px var(--bg),0 0 14px var(--glow)}
+  .wtitle .wt{font-family:"Kanit",sans-serif;font-weight:600;font-size:19px}
+  .wtitle .ws{font-size:12.5px;color:var(--dim);font-family:"Space Mono",monospace;letter-spacing:.06em}
+
+  /* ---- day rows ---- */
+  .day{
+    display:flex;gap:13px;align-items:flex-start;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:13px 14px;margin-bottom:8px;cursor:pointer;
+    transition:border-color .2s,background .2s,opacity .2s;
+  }
+  .day:hover{border-color:var(--amber)}
+  .day:focus-within{outline:2px solid var(--amber);outline-offset:2px}
+  .day.mile{background:linear-gradient(180deg,var(--glow),transparent),var(--panel);border-color:rgba(230,169,91,.4)}
+  .dot{
+    flex:none;margin-top:1px;width:24px;height:24px;border-radius:50%;
+    border:2px solid var(--line);background:transparent;position:relative;transition:.2s;
+  }
+  .dot::after{content:"";position:absolute;inset:4px;border-radius:50%;background:transparent;transition:.2s}
+  .num{flex:none;width:30px;font-family:"Space Mono",monospace;font-weight:700;font-size:15px;color:var(--dim);margin-top:1px}
+  .body{flex:1;min-width:0}
+  .focus{font-weight:600;font-size:14.5px;color:var(--ink);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .focus .min{font-family:"Space Mono",monospace;font-size:11px;color:var(--amber);background:var(--panel2);border-radius:5px;padding:1px 6px;font-weight:400}
+  .task{font-size:13px;color:var(--dim);margin-top:3px}
+  .key-tip{color:var(--amber-hi);font-weight:600}
+
+  .day.done{opacity:.62}
+  .day.done .dot{border-color:var(--amber);background:var(--amber)}
+  .day.done .dot::after{background:var(--bg);inset:6px}
+  .day.done .focus{text-decoration:line-through;text-decoration-color:var(--dim)}
+  .day.done .num{color:var(--amber)}
+
+  .milestone{
+    display:flex;gap:10px;align-items:center;
+    font-size:13.5px;color:var(--ink);margin:4px 0 2px;padding:11px 14px;
+    border-left:3px solid var(--amber);background:var(--panel2);border-radius:0 10px 10px 0;
+  }
+  .milestone b{color:var(--amber-hi);font-weight:600}
+
+  /* ---- next steps ---- */
+  .next{margin-top:38px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 20px}
+  .next h2{font-family:"Kanit",sans-serif;font-weight:600;font-size:20px;margin-bottom:6px}
+  .next h2 span{color:var(--amber-hi)}
+  .next p{font-size:13.5px;color:var(--dim);margin-top:8px}
+  .next p b{color:var(--ink);font-weight:600}
+  .next ul{list-style:none;margin-top:12px}
+  .next li{font-size:13.5px;padding:8px 0 8px 22px;position:relative;border-top:1px solid var(--line)}
+  .next li:first-child{border-top:none}
+  .next li::before{content:"♪";position:absolute;left:0;color:var(--amber)}
+
+  /* ---- footer / reset ---- */
+  .tips{margin-top:26px;font-size:12.5px;color:var(--dim);text-align:center;line-height:1.7}
+  .reset{display:block;margin:22px auto 0;background:transparent;border:1px solid var(--line);
+    color:var(--dim);font-family:"IBM Plex Sans Thai",sans-serif;font-size:12.5px;
+    padding:9px 18px;border-radius:9px;cursor:pointer;transition:.2s}
+  .reset:hover{border-color:var(--amber);color:var(--amber)}
+
+  @media (max-width:430px){
+    .chords{gap:6px}
+    .chip{padding:10px 3px}
+    .chip .nm{font-size:20px}
+    .chip .pat{font-size:9.5px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+  @media print{
+    body{background:#fff;color:#1a1a1a}
+    header{background:none;border-color:#ccc}
+    .eyebrow,.chip .nm,.next h2 span,.key-tip{color:#9a5b15}
+    .day,.chip,.next,.goal{background:#fff;border-color:#ddd}
+    .day.done{opacity:1}
+    .reset,.progress{display:none}
+    .inlay{color:#9a5b15}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="eyebrow">30-DAY PRACTICE · GUITAR</div>
+    <h1>เล่นให้ได้ใน 30 วัน<br><span class="song">Ready or Not</span></h1>
+    <p class="sub">Mark Lee · เกากีต้าร์อะคูสติก · เริ่มจากศูนย์</p>
+    <p class="goal">เป้าหมาย: เกาเพลง <b>C–F–Am–G</b> ได้เต็มเพลง แล้วมีพื้นฐานพอไปต่อเพลงอื่นอีกเพียบ — ซ้อมวันละ <b>15–25 นาที</b> ติ๊กถูกทุกวันที่ทำเสร็จ</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="progress">
+    <div class="top"><span class="lbl">PROGRESS</span><span class="cnt" id="cnt">0 / 30 วัน</span></div>
+    <div class="track"><div class="fill" id="fill"></div></div>
+  </div>
+
+  <div class="chords">
+    <div class="chip"><div class="nm">C</div><div class="tag">คอร์ดเปิด</div><div class="pat"><b>5</b>-3-2-1-2-3-2</div></div>
+    <div class="chip"><div class="nm">F</div><div class="tag">แบบย่อ 4 สาย</div><div class="pat"><b>4</b>-3-2-1-2-3-2</div></div>
+    <div class="chip"><div class="nm">Am</div><div class="tag">คอร์ดเปิด</div><div class="pat"><b>4</b>-3-2-1-2-3-2</div></div>
+    <div class="chip"><div class="nm">G</div><div class="tag">คอร์ดเปิด</div><div class="pat"><b>6</b>-3-2-1-2-3-2</div></div>
+  </div>
+  <p class="strip-note">ลายเกาเหมือนกันทุกคอร์ด <b>เบส-3-2-1-2-3-2</b> · เปลี่ยนแค่สายเบส (ตัวแรก) ตามคอร์ด</p>
+
+  <div id="plan"></div>
+
+  <div class="next">
+    <h2>ต่อยอด <span>4 คอร์ดนี้เล่นได้เป็นร้อยเพลง</span></h2>
+    <p>C–F–Am–G คือ "4 คอร์ดมหาเศรษฐี" ในคีย์ C — เพลงป็อป/อะคูสติกทั่วโลกใช้กลุ่มนี้ซ้ำๆ พอเล่น Ready or Not ได้ ลายเกาเดิมและคอร์ดเดิมเอาไปใส่เพลงอื่นได้ทันที</p>
+    <ul>
+      <li>หาเพลงต่อไป: ค้นใน Ultimate Guitar / Chordie ว่า "4 chords C G Am F" จะเจอเพลงเล่นง่ายเพียบ</li>
+      <li>เสียงไม่ถึง? หนีบ <b>capo</b> เลื่อนคีย์ให้พอดีเสียงเรา โดยยังเล่นคอร์ดรูปเดิม</li>
+      <li>อยากเล่นเพลงจังหวะเร็ว? ใช้ "ตีคอร์ด" (ลง ลง ลง-ขึ้น) แทนการเกา กับคอร์ดชุดเดิม</li>
+      <li>เพิ่ม <b>D</b> กับ <b>Em</b> ก็ได้ครบ "คอร์ดมหัศจรรย์" เล่นเพลงไทยได้อีกมาก</li>
+    </ul>
+  </div>
+
+  <p class="tips">
+    ปลายนิ้วเจ็บช่วง 2–3 สัปดาห์แรกเป็นเรื่องปกติ เดี๋ยวด้านขึ้นเอง<br>
+    ซ้อมวันละนิดทุกวัน ดีกว่าซ้อมยาวๆ สัปดาห์ละครั้ง · อัดคลิปทุกสุดสัปดาห์ไว้ดูพัฒนาการ
+  </p>
+
+  <button class="reset" id="reset">ล้างความคืบหน้าทั้งหมด</button>
+</div>
+
+<script>
+const WEEKS=[
+ {marker:"III",title:"รู้จักคอร์ด 4 ตัว",sub:"WEEK 1 · DAY 1–7",days:[
+  {d:1,f:"จูนสาย + รู้จักสาย 1–6 + จับคอร์ด C",t:"ใช้แอป GuitarTuna จูนให้ตรง แล้วจับ C ดีดทีละสายให้เสียงใสทุกสาย",m:15},
+  {d:2,f:"คอร์ด Am",t:"จับ Am ดีดเช็คทีละสาย แล้วสลับปล่อย/จับ C ซ้ำๆ ให้นิ้วจำ",m:15},
+  {d:3,f:"คอร์ด G",t:"จับ G กางนิ้วหน่อย ช่วงแรกจะงงสุด ใจเย็น เช็คให้ทุกสายดัง",m:20},
+  {d:4,f:"คอร์ด F แบบย่อ 4 สาย",t:"ตัวยากสุด: นิ้วชี้ทาบสาย 1–2 เฟร็ต1, กลางสาย3 เฟร็ต2, นางสาย4 เฟร็ต3",m:20},
+  {d:5,f:"ทบทวนทั้ง 4 คอร์ด",t:"จับสลับช้าๆ ทีละคู่ ยังไม่ต้องเร็ว ขอแค่ถูกตำแหน่ง",m:20},
+  {d:6,f:"เช็คเสียงทุกคอร์ด",t:"ดีดทีละสายทั้ง 4 คอร์ด สายไหนบอด/ดับ ขยับนิ้วแก้ให้ใส",m:15},
+ ],mile:{txt:"จับ <b>C · Am · G · F(ย่อ)</b> ได้เสียงใสทุกตัว — อัดคลิปจับทีละคอร์ดไว้เทียบ"},lastDay:{d:7,f:"เป้าหมายสัปดาห์ 1",t:"จับครบ 4 คอร์ดได้เสียงใส (ยังไม่ต้องเร็ว)",m:20,emoji:"🎯"}},
+
+ {marker:"V",title:"เปลี่ยนคอร์ดให้ลื่น",sub:"WEEK 2 · DAY 8–14",days:[
+  {d:8,f:"คู่ C ↔ Am",t:"ตีคอร์ดดีดรวดเดียว เปลี่ยนไปกลับ นับ 1 นาทีเปลี่ยนได้กี่รอบ",m:15},
+  {d:9,f:"คู่ Am ↔ G",t:"เปลี่ยนไปกลับช้าๆ ให้เสียงไม่บอดตอนเปลี่ยน",m:15},
+  {d:10,f:"คู่ G ↔ C",t:"คู่นี้เจอบ่อยมากในเพลงป็อป ฝึกให้คล่อง",m:15},
+  {d:11,f:"⭐ คู่ตัวยาก C ↔ F",t:"จัดนิ้วใหม่หลายนิ้ว จุดที่คนติดบ่อยสุด ฝึกคู่นี้แยกซ้ำเยอะๆ",m:20,key:true},
+  {d:12,f:"คู่ F → Am และ G → C",t:"ต่อให้ครบลำดับเพลง เปลี่ยนช้าๆ ไม่ต้องรีบ",m:20},
+  {d:13,f:"เล่นลำดับเต็ม C–F–Am–G",t:"ตีคอร์ดธรรมดา คอร์ดละ 1 ห้อง วนทั้งเพลง",m:20},
+ ],mile:{txt:"เปลี่ยน <b>C–F–Am–G</b> วนได้ลื่น (แบบตีคอร์ด) — อัดคลิปเทียบกับสัปดาห์ก่อน"},lastDay:{d:14,f:"เป้าหมายสัปดาห์ 2",t:"ตีคอร์ดวน C–F–Am–G ได้ไม่สะดุดที่ความเร็วช้า",m:20,emoji:"🎯"}},
+
+ {marker:"VII",title:"ใส่ลายเกา",sub:"WEEK 3 · DAY 15–21",days:[
+  {d:15,f:"รู้จักลายเกา เบส-3-2-1-2-3-2",t:"ฝึกมือขวาบนคอร์ด C ช้ามากๆ ให้นิ้วจำลำดับสาย",m:20},
+  {d:16,f:"เกา C ให้คล่อง แล้วลอง Am",t:"คอร์ดละ 1 แพทเทิร์น (C กับ Am ใช้สายเบสคล้ายกัน)",m:20},
+  {d:17,f:"เกา G และ F",t:"สังเกตว่าเปลี่ยนแค่สายเบส: G เริ่มสาย6, F เริ่มสาย4",m:20},
+  {d:18,f:"เกาต่อกัน C → F",t:"ช้าๆ ไม่หยุดระหว่างเปลี่ยนคอร์ด ให้ลื่นไหล",m:25},
+  {d:19,f:"เกาต่อกัน Am → G → C",t:"ต่อท่อนให้ยาวขึ้น มือขวาไม่หยุด",m:25},
+  {d:20,f:"เกาวนทั้งเพลง",t:"C–F–Am–G คอร์ดละ 1 แพทเทิร์น ช้าๆ ต่อเนื่อง",m:25},
+ ],mile:{txt:"เกาลายเพลงวน 4 คอร์ดได้ต่อเนื่อง (ช้าก็ได้) — อัดคลิป"},lastDay:{d:21,f:"เป้าหมายสัปดาห์ 3",t:"เกาวน C–F–Am–G ต่อเนื่องได้ไม่หยุดมือ",m:25,emoji:"🎯"}},
+
+ {marker:"XII",dbl:true,title:"เล่นเพลงจริง + ต่อยอด",sub:"WEEK 4 · DAY 22–30",days:[
+  {d:22,f:"เล่นตามคลิป TikTok ช้า 0.5x",t:"กดลดสปีดในแอป เล่นตามทั้งเพลง loop ท่อนที่ติด",m:25},
+  {d:23,f:"เพิ่มเป็น 0.75x",t:"เล่นตามให้ทันจังหวะที่เร็วขึ้น",m:25},
+  {d:24,f:"ความเร็วจริง",t:"เล่นเต็มสปีด ท่อนไหนสะดุดให้วน loop เฉพาะท่อนนั้น",m:25},
+  {d:25,f:"เล่นจบรวดเดียว + เปิดเพลงคลอ",t:"เปิดเพลงต้นฉบับเล่นคลอไปด้วย ช่วยจับจังหวะ",m:25},
+  {d:26,f:"🎤 ลองร้อง/ฮัมไปเกาไป",t:"ยากขึ้นอีกขั้น แต่นี่คือเป้าหมายจริง ค่อยๆ ทำ",m:25},
+  {d:27,f:"ต่อยอด — ลองเพลงอื่น 4 คอร์ดเดิม",t:"เอาลายเกาเดิมไปใส่เพลงอื่นที่ใช้ C–F–Am–G",m:25},
+  {d:28,f:"ลองแพทเทิร์นตีคอร์ด",t:"ลง ลง ลง-ขึ้น — ใช้กับเพลงจังหวะเร็ว เล่นได้หลากหลายขึ้น",m:20},
+  {d:29,f:"โบนัส: คอร์ด D และ Em",t:"เพิ่ม 2 ตัวนี้ ได้ครบคอร์ดมหัศจรรย์ เล่นเพลงไทยได้อีกเพียบ",m:20},
+ ],mile:{txt:"เล่น <b>Ready or Not</b> ได้เต็มเพลง + มีพื้นฐาน 6 คอร์ดไปต่อเพลงอื่น"},lastDay:{d:30,f:"🏆 วันจบคอร์ส",t:"อัดคลิปเล่น Ready or Not เต็มเพลง! เทียบกับวันที่ 7 จะเห็นว่ามาไกลแค่ไหน",m:30,emoji:""}},
+];
+
+const KEY="readyornot_30day_v1";
+let done=new Set();
+
+function rowHTML(o){
+  const mile=o.emoji==="🎯"||o.emoji==="";
+  const tipClass=o.key?' key-tip':'';
+  return `<label class="day${mile?' mile':''}" data-d="${o.d}">
+    <span class="dot"></span>
+    <span class="num">${o.emoji?o.emoji:String(o.d).padStart(2,'0')}</span>
+    <span class="body">
+      <span class="focus${tipClass}">${o.f}<span class="min">${o.m} นาที</span></span>
+      <span class="task">${o.t}</span>
+    </span>
+  </label>`;
+}
+
+function build(){
+  let html="";
+  WEEKS.forEach(w=>{
+    html+=`<section class="week">
+      <div class="whead">
+        <div class="inlay${w.dbl?' dbl':''}">${w.marker}</div>
+        <div class="wtitle"><div class="wt">${w.title}</div><div class="ws">${w.sub}</div></div>
+      </div>`;
+    w.days.forEach(o=>html+=rowHTML(o));
+    html+=rowHTML(w.lastDay);
+    html+=`<div class="milestone">🎯 <span><b>เป้าหมาย:</b> ${w.mile.txt}</span></div>`;
+    html+=`</section>`;
+  });
+  document.getElementById("plan").innerHTML=html;
+  document.querySelectorAll(".day").forEach(el=>{
+    const d=+el.dataset.d;
+    el.addEventListener("click",e=>{e.preventDefault();toggle(d,el);});
+  });
+}
+
+function toggle(d,el){
+  if(done.has(d))done.delete(d); else done.add(d);
+  el.classList.toggle("done",done.has(d));
+  updateProgress(); save();
+}
+
+function paint(){
+  document.querySelectorAll(".day").forEach(el=>{
+    el.classList.toggle("done",done.has(+el.dataset.d));
+  });
+  updateProgress();
+}
+
+function updateProgress(){
+  const n=done.size;
+  document.getElementById("cnt").textContent=n+" / 30 วัน";
+  document.getElementById("fill").style.width=(n/30*100)+"%";
+}
+
+async function load(){
+  try{
+    const r=await window.storage.get(KEY,false);
+    if(r&&r.value)done=new Set(JSON.parse(r.value));
+  }catch(e){/* first run or storage unavailable — start empty */}
+  paint();
+}
+async function save(){
+  try{await window.storage.set(KEY,JSON.stringify([...done]),false);}catch(e){}
+}
+
+document.getElementById("reset").addEventListener("click",async()=>{
+  done=new Set(); paint();
+  try{await window.storage.delete(KEY,false);}catch(e){}
+});
+
+build();
+load();
+</script>
+</body>
+</html>
